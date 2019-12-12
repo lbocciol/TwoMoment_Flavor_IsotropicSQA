@@ -1,0 +1,8 @@
+Executables/*.mod
+Executables/*.o
+Executables/Decoherence*
+Executables/CHIMERA
+Executables/*.h5
+Executables/*.xg
+Executables/*.dat
+Output
