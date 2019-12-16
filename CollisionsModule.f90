@@ -70,6 +70,7 @@ CONTAINS
     REAL(DP), INTENT(IN) :: dt_loc
     INTEGER  :: iX, iS, iE
 
+    !$OMP PARALLEL DO COLLAPSE(2) PRIVATE( iX, iE, iS )
     DO iX = 1,nX_G
       DO iE = 1,nE_G 
     
@@ -87,6 +88,7 @@ CONTAINS
       
       END DO
     END DO
+    !$OMP END PARALLEL DO
     
   END SUBROUTINE SolveImaginaryPart
 

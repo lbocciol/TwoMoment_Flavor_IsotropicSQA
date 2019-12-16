@@ -87,18 +87,18 @@ CONTAINS
 
     J0_old = uPR_N(:,:,iPR_D,:)
 
-!    !$OMP PARALLEL DO PRIVATE(iEk,iX)
-!    DO iEk = 1,nE_G   
-!      DO iX = 1,nX_G
-!        
-!        CALL ComputeNu4CollisionTerms( &
-!            J0_old(:,iX,:), &
-!            CollisionTermNu4(iEk,iX,:), &
-!            Energies, nE_G, iEk )
-!      
-!      END DO
-!    END DO
-!    !$OMP END PARALLEL DO
+    !$OMP PARALLEL DO COLLAPSE(2) PRIVATE(iEk,iX)
+    DO iEk = 1,nE_G   
+      DO iX = 1,nX_G
+        
+        CALL ComputeNu4CollisionTerms( &
+            J0_old(:,iX,:), &
+            CollisionTermNu4(iEk,iX,:), &
+            Energies, nE_G, iEk )
+      
+      END DO
+    END DO
+    !$OMP END PARALLEL DO
     
     CollisionTermNu4 = Zero
     !CALL Rk_Explicit_Step(dt)
@@ -111,7 +111,8 @@ CONTAINS
       CALL SolveThisIteration(0.8d0 * dt,J0_check)
       
       Error = 0
-      !$OMP PARALLEL DO 
+      
+      !$OMP PARALLEL DO COLLAPSE(3) PRIVATE( iE,iX,iS ) 
       DO iE = 1,nE_G
       DO iX = 1,nX_G
       DO iS = 1,nSpecies
@@ -170,7 +171,7 @@ CONTAINS
   
         END DO
       
-        !$OMP PARALLEL DO PRIVATE(iEk,iX)
+        !$OMP PARALLEL DO COLLAPSE(2) PRIVATE(iEk,iX)
         DO iEk = 1,nE_G
           DO iX = 1,nX_G
   
@@ -237,7 +238,7 @@ CONTAINS
 
     INTEGER :: iS, iE, iX
 
-    !$OMP PARALLEL DO PRIVATE( iE, iX, iS )
+    !$OMP PARALLEL DO COLLAPSE(3) PRIVATE( iE, iX, iS )
     DO iE = 1,nE_G
       DO iX = 1,nX_G
         DO iS = 1,nSpecies
